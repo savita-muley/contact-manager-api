@@ -53,7 +53,7 @@ This project uses .NET version 6
 - ContactManagement.API.Services
   ----------------------------------
     This layer contains the main business logic of the application. It contains services that implement the core functionalities and processes. The services interacts with data repositories to interact with database.
-
+```
 
 ## How the application could scale with a large number of contacts?
 
