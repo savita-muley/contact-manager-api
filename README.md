@@ -2,6 +2,10 @@
 
 This project uses .NET version 6
 
+## App Demo Link
+
+[Demo](https://in.pinterest.com/pin/461337555595836411)
+
 ## Setup Instructions
 
 1. **Install .NET 6**  
