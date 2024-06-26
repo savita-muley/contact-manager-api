@@ -9,9 +9,9 @@ namespace ContactManagement.API.Services
 {
     public class ContactService : IContactService
     {
-        public IBaseRepository<Contact> _contactRepository { get; }
+        public IJsonDataRespository<Contact> _contactRepository { get; }
         private readonly IMapper _mapper;
-        public ContactService(IBaseRepository<Contact> contactRepository, IMapper mapper)
+        public ContactService(IJsonDataRespository<Contact> contactRepository, IMapper mapper)
         {
             _contactRepository = contactRepository;
             _mapper = mapper;
@@ -19,16 +19,9 @@ namespace ContactManagement.API.Services
 
         public IEnumerable<ContactResponseModel> GetAll()
         {
-            var contacts = _contactRepository.AllAsQueryable().ToList();
+            var contacts = _contactRepository.AsEnumerable();
 
             return _mapper.Map<List<ContactResponseModel>>(contacts);
-        }
-
-        public async Task<ContactResponseModel> GetById(int id)
-        {
-            var contact = await _contactRepository.GetById(id);
-
-            return _mapper.Map<ContactResponseModel>(contact); ;
         }
 
         public ContactResponseModel Create(CreateContactRequest model)
@@ -37,16 +30,24 @@ namespace ContactManagement.API.Services
 
             var contact = _mapper.Map<Contact>(model);
 
+            contact.Id = GetId();
+
             _contactRepository.Add(contact);
 
             _contactRepository.SaveChanges();
 
-            return _mapper.Map<ContactResponseModel>(contact); ;
+            return _mapper.Map<ContactResponseModel>(contact);
+        }
+
+        private int GetId()
+        {
+            var lastContact = _contactRepository.AsEnumerable().OrderByDescending(c => c.Id).FirstOrDefault();
+            return lastContact == null ? 1 : lastContact.Id + 1;
         }
 
         private void EnsureUniqueContact(CreateContactRequest model, int contactId = 0)
         {
-            var existingContacts = _contactRepository.AllAsQueryable()
+            var existingContacts = _contactRepository.AsEnumerable()
                 .Where(e => e.Email.ToLower() == model.Email.ToLower() && e.Id != contactId)
                 .Count();
 
@@ -58,7 +59,7 @@ namespace ContactManagement.API.Services
 
         public async Task<ContactResponseModel> Update(int id, CreateContactRequest model)
         {
-            var contact = await _contactRepository.GetById(id);
+            var contact = _contactRepository.AsEnumerable().FirstOrDefault(c => c.Id == id);
 
             if (contact == null)
             {
@@ -71,8 +72,6 @@ namespace ContactManagement.API.Services
             contact.LastName = model.LastName;
             contact.Email = model.Email;
 
-            _contactRepository.Update(contact);
-
             _contactRepository.SaveChanges();
 
             return _mapper.Map<ContactResponseModel>(contact); ;
@@ -80,7 +79,8 @@ namespace ContactManagement.API.Services
 
         public void Delete(int id)
         {
-            _contactRepository.Delete(id);
+            _contactRepository.Delete(c => c.Id == id);
+
             _contactRepository.SaveChanges();
         }
     }

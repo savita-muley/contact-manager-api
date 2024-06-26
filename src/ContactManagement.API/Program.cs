@@ -33,6 +33,7 @@ services.AddControllers().AddJsonOptions(x =>
 services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 services.AddScoped<IContactService, ContactService>();
 services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+services.AddScoped(typeof(IJsonDataRespository<>), typeof(JsonDataRespository<>));
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();

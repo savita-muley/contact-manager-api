@@ -7,7 +7,7 @@ namespace ContactManagement.API.DataAccess.Repositories
         protected readonly DataContext _context;
         internal DbSet<TEntity> dbSet;
 
-        public BaseRepository(IServiceProvider serviceProvider, DataContext context)
+        public BaseRepository(DataContext context)
         {
             _context = context;
             dbSet = _context.Set<TEntity>();

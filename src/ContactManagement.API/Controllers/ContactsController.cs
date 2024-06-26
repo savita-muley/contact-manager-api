@@ -16,6 +16,11 @@ namespace ContactManagement.API.Controllers
             _contactService = userService;
         }
 
+
+        /// <summary>
+        /// Returns all the contacts
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -24,14 +29,11 @@ namespace ContactManagement.API.Controllers
             return ResponseHelper.SuccessResult(contacts);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var contact = await _contactService.GetById(id);
-
-            return ResponseHelper.SuccessResult(contact);
-        }
-
+        /// <summary>
+        /// Create new contact
+        /// </summary>
+        /// <param name="model">Contact Model</param>
+        /// <returns>Created Contact</returns>
         [HttpPost]
         public IActionResult Create(CreateContactRequest model)
         {
@@ -40,6 +42,13 @@ namespace ContactManagement.API.Controllers
             return ResponseHelper.SuccessResult(contact);
         }
 
+
+        /// <summary>
+        /// Updates an existing contact
+        /// </summary>
+        /// <param name="id">Id of the contact to update</param>
+        /// <param name="model">Contact Model</param>
+        /// <returns>Updated Contact</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, CreateContactRequest model)
         {
@@ -48,6 +57,11 @@ namespace ContactManagement.API.Controllers
             return ResponseHelper.SuccessResult(contact);
         }
 
+        /// <summary>
+        /// Deletes the contact
+        /// </summary>
+        /// <param name="id">Id of the contact to delete</param>
+        /// <returns>Empty Result</returns>
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
